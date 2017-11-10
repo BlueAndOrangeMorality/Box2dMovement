@@ -26,12 +26,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import de.ranagazoo.box.Box2dContactListener;
 import de.ranagazoo.box.DebugOutput;
 import de.ranagazoo.box.Enemy;
 import de.ranagazoo.box.Obstacle;
 import de.ranagazoo.box.Player;
 import de.ranagazoo.box.Waypoint;
-import de.ranagazoo.box.Box2dContactListener;
 
 public class Box2dMovement extends ApplicationAdapter {
 	
