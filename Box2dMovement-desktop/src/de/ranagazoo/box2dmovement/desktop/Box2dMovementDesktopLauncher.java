@@ -2,7 +2,8 @@ package de.ranagazoo.box2dmovement.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import de.ranagazoo.box2dmovement.Box2dMovement;
+
+import de.ranagazoo.box.*;
 
 public class Box2dMovementDesktopLauncher {
 	public static void main (String[] arg) {

@@ -3,7 +3,8 @@ package de.ranagazoo.box2dmovement.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import de.ranagazoo.box2dmovement.Box2dMovement;
+
+import de.ranagazoo.box.*;
 
 public class HtmlLauncher extends GwtApplication {
 

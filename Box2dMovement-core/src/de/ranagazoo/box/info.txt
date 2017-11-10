@@ -1,0 +1,74 @@
+//  /*
+//   * Just an example on how to normally create a Body with 1-n fixtures.
+//   * Those fixtures define the (static) form of a body
+//   * 
+//   * If you want dynamic forms, crate multiple bodys and create Joints between them
+//   */
+//  public static void howToCreateABox2dObject(World world)
+//  {
+//    
+//    //-------------------------------------------------------------------------------------------------------------------
+//    // 1st: Create a Body, this has no shape, nor weight, just a few values and a position
+//    //-------------------------------------------------------------------------------------------------------------------
+//    
+//    //BodyDef gets the parameters
+//    BodyDef bodyDef = new BodyDef();
+//    bodyDef.angularDamping = 0;               //higher than zero: How fast this body will slow down rotating
+//    bodyDef.fixedRotation = false;            //true: this body will never ever rotate
+//    bodyDef.linearDamping = 0;                //higher than zero: How fast this body will slow down moving
+//    bodyDef.position.set(new Vector2(1, 1));  //Position in x,y in Meters
+//    bodyDef.type = BodyType.DynamicBody;      //default: BodyType.StaticBody
+//    
+//    //Body is created with the BodyDef
+//    Body body = world.createBody(bodyDef);
+//    body.setUserData("anyUserData");          //UserData: A Java Object, so anything, this can be used in a contact listener
+//    
+//    //-------------------------------------------------------------------------------------------------------------------
+//    //2nd: Add 1 to many fixtures to give this body a form
+//    //-------------------------------------------------------------------------------------------------------------------
+//    
+//    //Create a shape for my fixture. 
+//    //Complicated! This shape HAS to be disposed, but AFTER the FixtureDef, 
+//    //to which it was given, was used to create a fixture, not before.
+//    PolygonShape tempShape = new PolygonShape();
+//    tempShape.set(new float[]{-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
+//
+//    //This FixtureDef gets most values and the Shape
+//    FixtureDef fixtureDef = new FixtureDef();
+//    fixtureDef.density = 0.5f;      //heaviness
+//    fixtureDef.friction = 0.4f;     //Reibung
+//    fixtureDef.restitution = 0.1f;  //Make it bounce a little bit
+//    fixtureDef.shape = tempShape;        //The Shape object
+//    
+//    //Optional Filters
+//    fixtureDef.filter.categoryBits = 0x0001;  //Let's say this is the Category player. This Fixture belongs is now one of the players
+//    fixtureDef.filter.maskBits = 0x0002 | 0x0004;  //Let's say these are the Category's of Monster and Scenery. This Fixture now reacts only with Monsters and Scenery 
+//    
+//    //Create the fixture, afterwards the Shape can and must be diposed
+//    body.createFixture(fixtureDef);
+//    tempShape.dispose();
+//    
+//  }
+//  
+//  public static void howToCreateARevoluteJoint(World world, Body bodyA, Body bodyB)
+//  {
+//    
+//    //Starre Achse zwischen zwei Objekten, möglicherweise auch drehbar 
+//    RevoluteJointDef jointDef = new RevoluteJointDef();
+//    jointDef.bodyA = bodyA;       //This should be
+//    jointDef.bodyB = bodyB;       //two different bodys
+//    jointDef.type = JointType.RevoluteJoint;
+//    jointDef.localAnchorA.set(new Vector2(0, 0));
+//    //jointDef.upperAngle
+//    jointDef.lowerAngle = 0.5f;
+//
+//    //That's about it
+//    RevoluteJoint rj1 = (RevoluteJoint)world.createJoint(jointDef);
+//    
+//    //This joint can later be manipulated
+//    rj1.setMotorSpeed(2);
+//    rj1.enableMotor(true);
+//    rj1.setMaxMotorTorque(10.0f);
+//  }
+//  
+  
