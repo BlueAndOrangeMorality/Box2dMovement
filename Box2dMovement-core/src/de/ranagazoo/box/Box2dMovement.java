@@ -1,9 +1,9 @@
 package de.ranagazoo.box;
 
-import static de.ranagazoo.box.Box2dBuilder.createBody;
-import static de.ranagazoo.box.Box2dBuilder.createChainShape;
-import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
-import static de.ranagazoo.box.Box2dBuilder.createStaticBodyDef;
+//import static de.ranagazoo.box.Box2dBuilder.createBody;
+//import static de.ranagazoo.box.Box2dBuilder.createChainShape;
+//import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
+//import static de.ranagazoo.box.Box2dBuilder.createStaticBodyDef;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,8 +22,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Shape;
+//import com.badlogic.gdx.physics.box2d.FixtureDef;
+//import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import de.ranagazoo.box.Box2dContactListener;
@@ -83,7 +83,7 @@ public class Box2dMovement extends ApplicationAdapter {
 	  private ArrayList<Enemy> enemies;
 	  private ArrayList<Waypoint> waypoints;
 	  private ArrayList<Obstacle> obstacles;
-	  private Body borderBody; 
+//	  private Body borderBody; 
 	  private DebugOutput debugOutput;
 	  
 	  
