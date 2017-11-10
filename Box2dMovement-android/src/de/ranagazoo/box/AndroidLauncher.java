@@ -1,11 +1,11 @@
-package de.ranagazoo.box2dmovement;
+package de.ranagazoo.box;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import de.ranagazoo.box.*;
+import de.ranagazoo.box.Box2dMovement;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
