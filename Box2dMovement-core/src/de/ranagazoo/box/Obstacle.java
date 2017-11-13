@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 
-public class Obstacle
+public class Obstacle implements BoxEntity
 {
   private Sprite bottomSprite; 
   private Body groundBody;
@@ -33,7 +33,7 @@ public class Obstacle
     tempShape.dispose();
     
     bottomSprite = new Sprite(region);
-    bottomSprite.setSize(320f, 64f);
+    bottomSprite.setSize(100f, 64f);
     bottomSprite.setOrigin(16, 16);
   }
   
@@ -41,9 +41,12 @@ public class Obstacle
   public void render(SpriteBatch batch)
   {
     bottomSprite.setPosition((groundBody.getPosition().x - 5f) * 32, (groundBody.getPosition().y - 1f) * 32);
-    //Nur ausgeblendet, nicht entfernen!
-    //bottomSprite.draw(batch);     
+    bottomSprite.draw(batch);     
   
   }
+
+
+  @Override
+  public void move(Box2dMovement box2dMovement) {}
  
 }

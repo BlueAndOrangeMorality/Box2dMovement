@@ -24,23 +24,24 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import de.ranagazoo.box.Box2dMovement.Status;
 
-
-public class Enemy
+public class Enemy implements BoxEntity
 {
+  public static final int STATUS_IDLE = 1;
+  public static final int STATUS_ATTACK = 2;
+  public static final int STATUS_NEW_TARGET = 3;
+    
   private Body enemyBody;
-//  private Sprite triangleSprite;
   private int currentTargetIndex;
-  private Status status;
+  private int currentStatus;
   
   private Texture mechaTexture;
-  private Animation<TextureRegion> aaa;
+  private Animation<TextureRegion> animation;
   private float stateTime;
   
-  public Enemy(World world, Vector2 position, TextureRegion entityTriangleRegion)
+  public Enemy(World world, Vector2 position)
   {
-    status = Status.IDLE;
+    currentStatus = STATUS_IDLE;
     stateTime = 0f;
     
     Shape      tempShape;
@@ -62,33 +63,17 @@ public class Enemy
     tempShape.dispose();
     
     
-//    triangleSprite = new Sprite(entityTriangleRegion);
-//    triangleSprite.setSize(TS, TS);
-//    triangleSprite.setOrigin(TS/2, TS/2);
     
-  mechaTexture = new Texture(Gdx.files.internal("data/mecha.png"));
-  mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-//  TextureRegion mechaRegion1 = new TextureRegion(mechaTexture, 0, 192, 32, 32);
-//  TextureRegion mechaRegion2 = new TextureRegion(mechaTexture, 32, 192, 32, 32);
-//  TextureRegion mechaRegion3 = new TextureRegion(mechaTexture, 64, 192, 32, 32);
-//  TextureRegion mechaRegion4 = new TextureRegion(mechaTexture, 96, 192, 32, 32);
-//  TextureRegion mechaRegion5 = new TextureRegion(mechaTexture, 128, 192, 32, 32);
-  mechaTexture = new Texture(Gdx.files.internal("data/mecha32.png"));
-  mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-  TextureRegion mechaRegion1 = new TextureRegion(mechaTexture, 0, 384, 64, 64);
-  TextureRegion mechaRegion2 = new TextureRegion(mechaTexture, 64, 384, 64, 64);
-  TextureRegion mechaRegion3 = new TextureRegion(mechaTexture, 128, 384, 64, 64);
-  TextureRegion mechaRegion4 = new TextureRegion(mechaTexture, 192, 384, 64, 64);
-  TextureRegion mechaRegion5 = new TextureRegion(mechaTexture, 256, 384, 64, 64);
-
-  
-  TextureRegion[] animationFrames = new TextureRegion[5];
-  animationFrames[0] = mechaRegion1;
-  animationFrames[1] = mechaRegion2;
-  animationFrames[2] = mechaRegion3;
-  animationFrames[3] = mechaRegion4;
-  animationFrames[4] = mechaRegion5;
-  aaa = new Animation<TextureRegion>(0.1f, animationFrames);
+    mechaTexture = new Texture(Gdx.files.internal("data/mecha32.png"));
+    mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+      
+    TextureRegion[] animationFrames = new TextureRegion[5];
+    animationFrames[0] = new TextureRegion(mechaTexture, 0, 384, 64, 64);
+    animationFrames[1] = new TextureRegion(mechaTexture, 64, 384, 64, 64);
+    animationFrames[2] = new TextureRegion(mechaTexture, 128, 384, 64, 64);
+    animationFrames[3] = new TextureRegion(mechaTexture, 192, 384, 64, 64);
+    animationFrames[4] = new TextureRegion(mechaTexture, 256, 384, 64, 64);
+    animation = new Animation<TextureRegion>(0.1f, animationFrames);
   }
   
   
@@ -100,15 +85,15 @@ public class Enemy
    */
   public void move(Box2dMovement box2dMovement)
   {
-    if(status.equals(Status.ATTACK))
+    if(currentStatus == STATUS_ATTACK)
     {
-      moveToPosition(box2dMovement.getPlayerBody().getPosition());
+      moveToPosition(box2dMovement.getPlayerPosition());
     }
-    else if(status.equals(Status.NEW_TARGET))
+    else if(currentStatus == STATUS_NEW_TARGET)
     {
       currentTargetIndex = box2dMovement.getNextWaypointIndex(currentTargetIndex);
 //      currentTargetIndex = box2dMovement.getRandomWaypointIndex(currentTargetIndex);
-      status = Status.IDLE;
+      currentStatus = STATUS_IDLE;
     }
     else
     {
@@ -187,13 +172,9 @@ public class Enemy
   
   
   public void render(SpriteBatch batch)
-  {
-//    triangleSprite.setPosition((enemyBody.getPosition().x - 0.5f) * TS, (enemyBody.getPosition().y- 0.5f) * TS);
-//    triangleSprite.setRotation(MathUtils.radiansToDegrees * enemyBody.getAngle());
-//    triangleSprite.draw(batch);
-    
+  {   
     stateTime += Gdx.graphics.getDeltaTime();
-    TextureRegion currentFrame = (TextureRegion) aaa.getKeyFrame(stateTime, true);
+    TextureRegion currentFrame = (TextureRegion) animation.getKeyFrame(stateTime, true);
     Sprite s = new Sprite(currentFrame);
     s.setPosition((enemyBody.getPosition().x - 1) * TS, (enemyBody.getPosition().y- 1) * TS);
     s.setRotation(MathUtils.radiansToDegrees * enemyBody.getAngle()+180);
@@ -212,8 +193,8 @@ public class Enemy
     return currentTargetIndex;
   }
   
-  public void setStatus(Status status)
+  public void setStatus(int status)
   {
-    this.status = status;
+    this.currentStatus = status;
   }
 }

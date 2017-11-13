@@ -21,7 +21,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 
-public class Player
+public class Player implements BoxEntity
 {
   
   private Body playerBody;
@@ -45,7 +45,7 @@ public class Player
   }
   
   
-  public void move()
+  public void move(Box2dMovement box2dMovement)
   {
     if(Gdx.input.isKeyPressed(Keys.A))
       playerBody.applyLinearImpulse(new Vector2(-1.2f, 0), playerBody.getPosition(), true);

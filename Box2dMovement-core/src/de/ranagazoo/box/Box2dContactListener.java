@@ -11,8 +11,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import de.ranagazoo.box.Box2dMovement.Status;
-
 
 
 public class Box2dContactListener implements ContactListener
@@ -25,14 +23,14 @@ public class Box2dContactListener implements ContactListener
     //MonsterSensor trifft auf player: angriff
     if(checkCategoryBits(contact, CATEGORY_PLAYER, CATEGORY_MSENSOR))
     {
-      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Status.ATTACK);
+      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Enemy.STATUS_ATTACK);
     }
    
     //Monster hat Spieler erwischt
     if(checkCategoryBits(contact, CATEGORY_PLAYER, CATEGORY_MONSTER))
     {
       Gdx.app.log("Spieler erwischt", "Aua-aua-aua");
-      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Status.NEW_TARGET);
+      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Enemy.STATUS_NEW_TARGET);
     }
    
     //Monster hat waypoint erreicht (NICHT MonsterSensor)
@@ -41,7 +39,7 @@ public class Box2dContactListener implements ContactListener
       Enemy enemy = (Enemy)contact.getFixtureA().getBody().getUserData();
       Integer waypointIndexInTheArray = (Integer)contact.getFixtureB().getBody().getUserData();
       if(enemy.getCurrentTargetIndex() == waypointIndexInTheArray.intValue())
-        enemy.setStatus(Status.NEW_TARGET);
+        enemy.setStatus(Enemy.STATUS_NEW_TARGET);
     }
   }
 
@@ -52,14 +50,14 @@ public class Box2dContactListener implements ContactListener
     if(checkCategoryBits(contact, CATEGORY_PLAYER, CATEGORY_MSENSOR))
     {
       Enemy enemy = (Enemy)contact.getFixtureB().getBody().getUserData();
-      enemy.setStatus(Status.NEW_TARGET);
+      enemy.setStatus(Enemy.STATUS_NEW_TARGET);
     }
 
     
     
     if(checkCategoryBits(contact, CATEGORY_PLAYER, CATEGORY_MONSTER))
     {
-      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Status.NEW_TARGET);
+      ((Enemy)contact.getFixtureB().getBody().getUserData()).setStatus(Enemy.STATUS_NEW_TARGET);
     }
   }
 

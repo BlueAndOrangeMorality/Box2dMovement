@@ -20,18 +20,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 //import com.badlogic.gdx.physics.box2d.FixtureDef;
 //import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-
-import de.ranagazoo.box.Box2dContactListener;
-import de.ranagazoo.box.DebugOutput;
-import de.ranagazoo.box.Enemy;
-import de.ranagazoo.box.Obstacle;
-import de.ranagazoo.box.Player;
-import de.ranagazoo.box.Waypoint;
 
 public class Box2dMovement extends ApplicationAdapter {
 	
@@ -52,20 +44,6 @@ public class Box2dMovement extends ApplicationAdapter {
 	  public static final short MASK_WAYPOINT = CATEGORY_MONSTER;
 
 	  public static final int TS = 32;
-
-	  public enum Status
-	  {
-	    IDLE, ATTACK, NEW_TARGET;
-	  }
-	  
-	 
-	  
-	  
-	  //next
-	  //http://www.iforce2d.net/b2dtut/sensors
-	  
-	  //Elder Retry Chaprettt, Arcy Trang, Greego Larcin, 
-	  
 	  
 	  private OrthographicCamera cameraSprites;
 	  private OrthographicCamera cameraBox2dDebug;
@@ -79,11 +57,9 @@ public class Box2dMovement extends ApplicationAdapter {
 	  private Box2DDebugRenderer debugRenderer;
 
 	  //My Objects
-	  private Player player;
-	  private ArrayList<Enemy> enemies;
+	  private ArrayList<BoxEntity> boxEntities;
 	  private ArrayList<Waypoint> waypoints;
-	  private ArrayList<Obstacle> obstacles;
-//	  private Body borderBody; 
+	   
 	  private DebugOutput debugOutput;
 	  
 	  
@@ -118,25 +94,25 @@ public class Box2dMovement extends ApplicationAdapter {
 	    TextureRegion entityTriangleRegion = new TextureRegion(entitiesBigTexture, 1* TS, 6 * TS, TS, TS);
 	    TextureRegion entityPlayerRegion   = new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS);
 
-	    
 	    //Random für Random
 	    random = new Random();
 	    
 	    debugOutput = new DebugOutput();
 
 	    //Ein Spieler
-	    player = new Player(world, new Vector2(16, 10), entityPlayerRegion);
+        boxEntities = new ArrayList<BoxEntity>();
+	    boxEntities.add(new Player(world, new Vector2(16, 10), entityPlayerRegion));
+	    
 	    
 	    //Beliebig viele entities
-	    enemies = new ArrayList<Enemy>();
-	    enemies.add(new Enemy(world, new Vector2(16, 22), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(20,  2), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(23,  2), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(17, 22), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(20, 22), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(23, 22), entityTriangleRegion));
-	    enemies.add(new Enemy(world, new Vector2(10, 22), entityTriangleRegion));
-
+	    boxEntities.add(new Enemy(world, new Vector2(16, 22)));
+	    boxEntities.add(new Enemy(world, new Vector2(20,  2)));
+	    boxEntities.add(new Enemy(world, new Vector2(23,  2)));
+	    boxEntities.add(new Enemy(world, new Vector2(17, 22)));
+	    boxEntities.add(new Enemy(world, new Vector2(20, 22)));
+	    boxEntities.add(new Enemy(world, new Vector2(23, 22)));
+	    boxEntities.add(new Enemy(world, new Vector2(10, 22)));
+	    
 	    //Beliebig viele Waypoints, zwischen denen die Entities hin- und hertuckern
 	    waypoints = new ArrayList<Waypoint>();
 	    waypoints.add(new Waypoint(world, new Vector2(3,  3),  entityTriangleRegion, waypoints.size()));
@@ -152,16 +128,16 @@ public class Box2dMovement extends ApplicationAdapter {
 	    waypoints.add(new Waypoint(world, new Vector2(25, 20), entityTriangleRegion, waypoints.size()));
 
 	    //Hindernisse (statisch)
-	    obstacles = new ArrayList<Obstacle>();
-	    obstacles.add(new Obstacle(world, new Vector2(16,4), region));
-//	    obstacles.add(new Obstacle(world, new Vector2(16,18), region));
-//	    obstacles.add(new Obstacle(world, new Vector2(25,12), region));
-//	    obstacles.add(new Obstacle(world, new Vector2(10,12), region));
+	    boxEntities.add(new Obstacle(world, new Vector2(16,4), region));
+//	    boxEntities.add(new Obstacle(world, new Vector2(16,18), region));
+//	    boxEntities.add(new Obstacle(world, new Vector2(25,12), region));
+//	    boxEntities.add(new Obstacle(world, new Vector2(10,12), region));
 	    
 	    //Jedem Enemy initial einen Waypoint zuweisen
-	    for(Enemy enemy : enemies)
+	    for(BoxEntity boxEntity : boxEntities)
 	    {
-	      enemy.setCurrentTargetId(getRandomWaypointIndex(0));
+	      if(boxEntity.getClass() == Enemy.class)
+	        ((Enemy)boxEntity).setCurrentTargetId(getRandomWaypointIndex(0));
 	    }
 	    
 
@@ -187,16 +163,12 @@ public class Box2dMovement extends ApplicationAdapter {
 
 		    Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0);
 		    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		    //Hier wird abgefragt, was der spieler eingibt
-		    player.move();
-		    
+	    
 		    //Hier wird dem enemy ein bewegungsbefehl gegeben, je nach status
-		    for(Enemy enemy : enemies)
+		    for(BoxEntity boxEntity : boxEntities)
 		    {
-		      enemy.move(this);
-		    }
-		  
+		      boxEntity.move(this);
+		    }	  
 		    
 //		    stateTime += Gdx.graphics.getDeltaTime();
 //		    TextureRegion currentFrame = aaa.getKeyFrame(stateTime, true);
@@ -204,23 +176,17 @@ public class Box2dMovement extends ApplicationAdapter {
 //		    s.setPosition(128, 40);
 		    
 		    
-		    
 		    batch.setProjectionMatrix(cameraSprites.combined);
 		    batch.begin();
 		    
 //		      s.draw(batch);
-		    
-		      player.render(batch);
 		      
-		      for(Enemy enemy : enemies)
-		      {
-		        enemy.render(batch);
-		      } 
-		      for(Obstacle obstacle : obstacles)
-		      {
-		        obstacle.render(batch);
-		      } 
-		      debugOutput.render(batch);
+		    for(BoxEntity boxEntity : boxEntities)
+		    {
+		      boxEntity.render(batch);
+		    } 
+		       
+		    debugOutput.render(batch);
 		      
 		    batch.end();
 
@@ -249,9 +215,16 @@ public class Box2dMovement extends ApplicationAdapter {
 	}
 	
 
-	  public Body getPlayerBody()
+	  public Vector2 getPlayerPosition()
 	  {
-	    return this.player.getBody();
+	    
+	    
+	    for(BoxEntity boxEntity : boxEntities)
+	    {
+	      if(boxEntity.getClass() == Player.class)
+	        return ((Player)boxEntity).getBody().getPosition();
+	    }
+	    return new Vector2(0,0);
 	  }
 
 
