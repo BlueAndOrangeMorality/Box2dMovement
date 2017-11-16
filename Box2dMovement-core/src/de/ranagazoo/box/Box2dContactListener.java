@@ -1,9 +1,9 @@
 package de.ranagazoo.box;
 
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_MONSTER;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_MSENSOR;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_PLAYER;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_WAYPOINT;
+import static de.ranagazoo.box.Config.CATEGORY_MONSTER;
+import static de.ranagazoo.box.Config.CATEGORY_MSENSOR;
+import static de.ranagazoo.box.Config.CATEGORY_PLAYER;
+import static de.ranagazoo.box.Config.CATEGORY_WAYPOINT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;

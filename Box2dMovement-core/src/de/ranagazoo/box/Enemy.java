@@ -1,14 +1,10 @@
 package de.ranagazoo.box;
 
-import static de.ranagazoo.box.Box2dBuilder.createBody;
-import static de.ranagazoo.box.Box2dBuilder.createDynamicBodyDef;
-import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
-import static de.ranagazoo.box.Box2dBuilder.createPolygonShape;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_MONSTER;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_MSENSOR;
-import static de.ranagazoo.box.Box2dMovement.MASK_MONSTER;
-import static de.ranagazoo.box.Box2dMovement.MASK_MSENSOR;
-import static de.ranagazoo.box.Box2dMovement.TS;
+import static de.ranagazoo.box.Config.CATEGORY_MONSTER;
+import static de.ranagazoo.box.Config.CATEGORY_MSENSOR;
+import static de.ranagazoo.box.Config.MASK_MONSTER;
+import static de.ranagazoo.box.Config.MASK_MSENSOR;
+import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,9 +16,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.World;
 
 
 public class Enemy implements BoxEntity
@@ -39,24 +38,48 @@ public class Enemy implements BoxEntity
   private Animation<TextureRegion> animation;
   private float stateTime;
   
-  public Enemy(World world, Vector2 position)
+  public Enemy(Box2dMovement box2dMovement, int posX, int posY)
   {
     currentStatus = STATUS_IDLE;
     stateTime = 0f;
     
-    Shape      tempShape;
-    FixtureDef tempFixtureDef = null;
+    Shape tempShape;
+    FixtureDef tempFixtureDef;
     
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.angularDamping = 2;
+    bodyDef.fixedRotation = false;
+    bodyDef.linearDamping = 2;
+    bodyDef.position.set(posX, posY);
+    bodyDef.type = BodyType.DynamicBody;
     
-    enemyBody = createBody(world, createDynamicBodyDef(2, false, 2, position), this);
-
-    tempShape = createPolygonShape(new float[]{-0.25f,-0.25f, 0,-1, 0.25f,-0.25f, 0.25f,0.25f, -0.25f,0.25f});
-    tempFixtureDef = createFixtureDef(0.2f, 0.4f, 0.1f, tempShape, CATEGORY_MONSTER, MASK_MONSTER);
+    enemyBody = box2dMovement.getWorld().createBody(bodyDef);
+    enemyBody.setUserData(this);
+    
+    //Wedge Shape for the enemy's body
+    
+    tempShape = new PolygonShape();
+    ((PolygonShape)tempShape).set(new float[]{-0.25f,-0.25f, 0,-1, 0.25f,-0.25f, 0.25f,0.25f, -0.25f,0.25f});
+    tempFixtureDef = new FixtureDef();
+    tempFixtureDef.density = 0.2f;
+    tempFixtureDef.friction = 0.4f;
+    tempFixtureDef.restitution = 0.1f;
+    tempFixtureDef.shape = tempShape;
+    tempFixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+    tempFixtureDef.filter.maskBits = MASK_MONSTER;
     enemyBody.createFixture(tempFixtureDef);
     
-    // Triangle sensor, einfach nur ein neues shape, neues fixturedef, an den bestehenden Body gekleistert
-    tempShape = Box2dBuilder.createCircleShape(3);
-    tempFixtureDef = createFixtureDef(0, 0.4f, 0.1f, tempShape, CATEGORY_MSENSOR, MASK_MSENSOR);
+    //Circle Shape for the enemy's sensor
+    
+    tempShape = new CircleShape();
+    ((CircleShape)tempShape).setRadius(3);
+    tempFixtureDef = new FixtureDef();
+    tempFixtureDef.density = 0f;
+    tempFixtureDef.friction = 0.4f;
+    tempFixtureDef.restitution = 0.1f;
+    tempFixtureDef.shape = tempShape;
+    tempFixtureDef.filter.categoryBits = CATEGORY_MSENSOR;
+    tempFixtureDef.filter.maskBits = MASK_MSENSOR;
     tempFixtureDef.isSensor = true;
     enemyBody.createFixture(tempFixtureDef);
     

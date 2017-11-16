@@ -4,9 +4,9 @@ import static de.ranagazoo.box.Box2dBuilder.createBody;
 import static de.ranagazoo.box.Box2dBuilder.createDynamicBodyDef;
 import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
 import static de.ranagazoo.box.Box2dBuilder.createPolygonShape;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_PLAYER;
-import static de.ranagazoo.box.Box2dMovement.MASK_PLAYER;
-import static de.ranagazoo.box.Box2dMovement.TS;
+import static de.ranagazoo.box.Config.CATEGORY_PLAYER;
+import static de.ranagazoo.box.Config.MASK_PLAYER;
+import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

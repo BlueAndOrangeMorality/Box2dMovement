@@ -4,11 +4,11 @@ import static de.ranagazoo.box.Box2dBuilder.createBody;
 import static de.ranagazoo.box.Box2dBuilder.createCircleShape;
 import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
 import static de.ranagazoo.box.Box2dBuilder.createStaticBodyDef;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_NONE;
-import static de.ranagazoo.box.Box2dMovement.CATEGORY_WAYPOINT;
-import static de.ranagazoo.box.Box2dMovement.MASK_NONE;
-import static de.ranagazoo.box.Box2dMovement.MASK_WAYPOINT;
-import static de.ranagazoo.box.Box2dMovement.TS;
+import static de.ranagazoo.box.Config.CATEGORY_NONE;
+import static de.ranagazoo.box.Config.CATEGORY_WAYPOINT;
+import static de.ranagazoo.box.Config.MASK_NONE;
+import static de.ranagazoo.box.Config.MASK_WAYPOINT;
+import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

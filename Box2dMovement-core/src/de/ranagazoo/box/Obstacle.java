@@ -28,7 +28,7 @@ public class Obstacle implements BoxEntity
     groundBody = createBody(world, createStaticBodyDef(2, false, 2, position), "userData");
     
     tempShape = createPolygonShape(new float[]{-2f, -1f, 2f, -1f, 2f, 1f, -2f, 1f});
-    tempFixtureDef = createFixtureDef(0.5f, 0.4f, 0.1f, tempShape, Box2dMovement.CATEGORY_SCENERY, Box2dMovement.MASK_SCENERY);
+    tempFixtureDef = createFixtureDef(0.5f, 0.4f, 0.1f, tempShape, Config.CATEGORY_SCENERY, Config.MASK_SCENERY);
     groundBody.createFixture(tempFixtureDef);
     tempShape.dispose();
     

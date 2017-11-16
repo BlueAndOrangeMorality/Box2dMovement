@@ -5,12 +5,15 @@ package de.ranagazoo.box;
 //import static de.ranagazoo.box.Box2dBuilder.createFixtureDef;
 //import static de.ranagazoo.box.Box2dBuilder.createStaticBodyDef;
 
+import static de.ranagazoo.box.Config.TS;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,24 +29,11 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Box2dMovement extends ApplicationAdapter {
+
+      public static final String TEXTURE_LIBGDX = "data/libgdx.png"; 
+	  public static final String TEXTURE_ENTITIES = "data/entities-big.png";
 	
-
-	  public static final short CATEGORY_PLAYER  = 0x0001;  // 0000000000000001 in binary
-	  public static final short CATEGORY_MONSTER = 0x0002;  // 0000000000000010 in binary
-	  public static final short CATEGORY_MSENSOR = 0x0008;  // 0000000000001000 in binary
-	  public static final short CATEGORY_SCENERY = 0x0004;  // 0000000000000100 in binary
-	  public static final short CATEGORY_NONE    = 0x0032;  // 0000000000100000 in binary ???
-	  public static final short CATEGORY_WAYPOINT    = 0x0064;  // 0000000001000000 in binary ???
-	  
-	  public static final short MASK_PLAYER =  CATEGORY_MONSTER | CATEGORY_SCENERY | CATEGORY_MSENSOR; // or ~CATEGORY_PLAYER
-	  public static final short MASK_MONSTER = CATEGORY_PLAYER | CATEGORY_SCENERY | CATEGORY_WAYPOINT; // or ~CATEGORY_MONSTER
-	  //Monstersensor, reagiert nur auf player
-	  public static final short MASK_MSENSOR = CATEGORY_PLAYER; // or ~CATEGORY_MONSTER
-	  public static final short MASK_SCENERY = -1;
-	  public static final short MASK_NONE = CATEGORY_SCENERY;
-	  public static final short MASK_WAYPOINT = CATEGORY_MONSTER;
-
-	  public static final int TS = 32;
+	  private AssetManager assetManager;
 	  
 	  private OrthographicCamera cameraSprites;
 	  private OrthographicCamera cameraBox2dDebug;
@@ -66,6 +56,9 @@ public class Box2dMovement extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		assetManager = new AssetManager();
+		loadAssets();
+		
 	    //box2dworld
 	    world = new World(new Vector2(0, 0), true);
 	    world.setContactListener(new Box2dContactListener());
@@ -85,11 +78,13 @@ public class Box2dMovement extends ApplicationAdapter {
 	    shapeRenderer = new ShapeRenderer();
 	    
 	    //Texturen für die Sprites
-	    libgdxTexture = new Texture(Gdx.files.internal("data/libgdx.png"));
+	    //libgdxTexture = new Texture(Gdx.files.internal("data/libgdx.png"));
+	    libgdxTexture = assetManager.get(TEXTURE_LIBGDX);
 	    libgdxTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	    TextureRegion region = new TextureRegion(libgdxTexture, 0, 0, 512, 275);
 
-	    entitiesBigTexture = new Texture(Gdx.files.internal("data/entities-big.png"));
+	    //entitiesBigTexture = new Texture(Gdx.files.internal("data/entities-big.png"));
+	    entitiesBigTexture = assetManager.get(TEXTURE_ENTITIES);
 	    entitiesBigTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	    TextureRegion entityTriangleRegion = new TextureRegion(entitiesBigTexture, 1* TS, 6 * TS, TS, TS);
 	    TextureRegion entityPlayerRegion   = new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS);
@@ -99,19 +94,20 @@ public class Box2dMovement extends ApplicationAdapter {
 	    
 	    debugOutput = new DebugOutput();
 
-	    //Ein Spieler
+	    
         boxEntities = new ArrayList<BoxEntity>();
+        
+        //Ein Spieler
 	    boxEntities.add(new Player(world, new Vector2(16, 10), entityPlayerRegion));
 	    
-	    
 	    //Beliebig viele entities
-	    boxEntities.add(new Enemy(world, new Vector2(16, 22)));
-	    boxEntities.add(new Enemy(world, new Vector2(20,  2)));
-	    boxEntities.add(new Enemy(world, new Vector2(23,  2)));
-	    boxEntities.add(new Enemy(world, new Vector2(17, 22)));
-	    boxEntities.add(new Enemy(world, new Vector2(20, 22)));
-	    boxEntities.add(new Enemy(world, new Vector2(23, 22)));
-	    boxEntities.add(new Enemy(world, new Vector2(10, 22)));
+	    boxEntities.add(new Enemy(this, 16, 22));
+	    boxEntities.add(new Enemy(this, 20,  2));
+	    boxEntities.add(new Enemy(this, 23,  2));
+	    boxEntities.add(new Enemy(this, 17, 22));
+	    boxEntities.add(new Enemy(this, 20, 22));
+	    boxEntities.add(new Enemy(this, 23, 22));
+	    boxEntities.add(new Enemy(this, 10, 22));
 	    
 	    //Beliebig viele Waypoints, zwischen denen die Entities hin- und hertuckern
 	    waypoints = new ArrayList<Waypoint>();
@@ -155,6 +151,8 @@ public class Box2dMovement extends ApplicationAdapter {
 	    //tempShape.dispose();
 	    
 	}
+
+	
 
 	@Override
 	public void render () {
@@ -212,6 +210,7 @@ public class Box2dMovement extends ApplicationAdapter {
 		batch.dispose();
 	    libgdxTexture.dispose();
 	    shapeRenderer.dispose();
+	    assetManager.dispose();
 	}
 	
 
@@ -253,4 +252,18 @@ public class Box2dMovement extends ApplicationAdapter {
 	  {
 	    return waypoints.get(parameter);
 	  }
+	  
+  public void loadAssets(){
+    assetManager.load(TEXTURE_LIBGDX, Texture.class);
+    assetManager.load(TEXTURE_ENTITIES, Texture.class);
+    assetManager.finishLoading();
+  }
+  
+  public AssetManager getAssetManager() {
+    return assetManager;
+  }
+  
+  public World getWorld() {
+		return world;
+  }
 }
