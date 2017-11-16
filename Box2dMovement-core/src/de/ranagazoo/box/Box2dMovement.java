@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,13 +33,19 @@ public class Box2dMovement extends ApplicationAdapter {
 
       public static final String TEXTURE_LIBGDX = "data/libgdx.png"; 
 	  public static final String TEXTURE_ENTITIES = "data/entities-big.png";
-	
+	  public static final String TEXTURE_MECHA = "data/mecha32.png";
+	  
 	  private AssetManager assetManager;
 	  
 	  private OrthographicCamera cameraSprites;
 	  private OrthographicCamera cameraBox2dDebug;
 	  private SpriteBatch batch;
-	  private Texture libgdxTexture, entitiesBigTexture;
+	  
+	  private Texture libgdxTexture, entitiesBigTexture, mechaTexture;
+	  private TextureRegion entityPlayerRegion;
+	  
+	  
+	  private Animation<TextureRegion> animation;
 	  
 	  private ShapeRenderer shapeRenderer;
 	  private Random random;
@@ -86,8 +93,7 @@ public class Box2dMovement extends ApplicationAdapter {
 	    //entitiesBigTexture = new Texture(Gdx.files.internal("data/entities-big.png"));
 	    entitiesBigTexture = assetManager.get(TEXTURE_ENTITIES);
 	    entitiesBigTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-	    TextureRegion entityTriangleRegion = new TextureRegion(entitiesBigTexture, 1* TS, 6 * TS, TS, TS);
-	    TextureRegion entityPlayerRegion   = new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS);
+	    entityPlayerRegion   = new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS);
 
 	    //Random für Random
 	    random = new Random();
@@ -95,10 +101,26 @@ public class Box2dMovement extends ApplicationAdapter {
 	    debugOutput = new DebugOutput();
 
 	    
+	    mechaTexture = assetManager.get(TEXTURE_MECHA);
+	    mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	      
+	    TextureRegion[] animationFrames = new TextureRegion[5];
+	    animationFrames[0] = new TextureRegion(mechaTexture, 0, 384, 64, 64);
+	    animationFrames[1] = new TextureRegion(mechaTexture, 64, 384, 64, 64);
+	    animationFrames[2] = new TextureRegion(mechaTexture, 128, 384, 64, 64);
+	    animationFrames[3] = new TextureRegion(mechaTexture, 192, 384, 64, 64);
+	    animationFrames[4] = new TextureRegion(mechaTexture, 256, 384, 64, 64);
+	    animation = new Animation<TextureRegion>(0.1f, animationFrames);
+	    
+	    
+	    
+	    
+	    
+	    
         boxEntities = new ArrayList<BoxEntity>();
         
         //Ein Spieler
-	    boxEntities.add(new Player(world, new Vector2(16, 10), entityPlayerRegion));
+	    boxEntities.add(new Player(this, 16, 10));
 	    
 	    //Beliebig viele entities
 	    boxEntities.add(new Enemy(this, 16, 22));
@@ -111,23 +133,22 @@ public class Box2dMovement extends ApplicationAdapter {
 	    
 	    //Beliebig viele Waypoints, zwischen denen die Entities hin- und hertuckern
 	    waypoints = new ArrayList<Waypoint>();
-	    waypoints.add(new Waypoint(world, new Vector2(3,  3),  entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(10, 3),  entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(10, 6),  entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(6,  9),  entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(3,  10), entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(20, 13), entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(21, 10), entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(22, 20), entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(23, 15), entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(24, 3),  entityTriangleRegion, waypoints.size()));
-	    waypoints.add(new Waypoint(world, new Vector2(25, 20), entityTriangleRegion, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 3,  3,  waypoints.size()));
+	    waypoints.add(new Waypoint(world, 10, 3,  waypoints.size()));
+	    waypoints.add(new Waypoint(world, 10, 6,  waypoints.size()));
+	    waypoints.add(new Waypoint(world, 6,  9,  waypoints.size()));
+	    waypoints.add(new Waypoint(world, 3,  10, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 20, 13, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 21, 10, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 22, 20, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 23, 15, waypoints.size()));
+	    waypoints.add(new Waypoint(world, 24, 3,  waypoints.size()));
+	    waypoints.add(new Waypoint(world, 25, 20, waypoints.size()));
 
 	    //Hindernisse (statisch)
-	    boxEntities.add(new Obstacle(world, new Vector2(16,4), region));
-//	    boxEntities.add(new Obstacle(world, new Vector2(16,18), region));
-//	    boxEntities.add(new Obstacle(world, new Vector2(25,12), region));
-//	    boxEntities.add(new Obstacle(world, new Vector2(10,12), region));
+	    boxEntities.add(new Obstacle(this, 16, 4, region));
+	    boxEntities.add(new Obstacle(this, 18, 8, region));
+	    
 	    
 	    //Jedem Enemy initial einen Waypoint zuweisen
 	    for(BoxEntity boxEntity : boxEntities)
@@ -165,19 +186,12 @@ public class Box2dMovement extends ApplicationAdapter {
 		    //Hier wird dem enemy ein bewegungsbefehl gegeben, je nach status
 		    for(BoxEntity boxEntity : boxEntities)
 		    {
-		      boxEntity.move(this);
+		      boxEntity.move();
 		    }	  
-		    
-//		    stateTime += Gdx.graphics.getDeltaTime();
-//		    TextureRegion currentFrame = aaa.getKeyFrame(stateTime, true);
-//		    Sprite s = new Sprite(currentFrame);
-//		    s.setPosition(128, 40);
 		    
 		    
 		    batch.setProjectionMatrix(cameraSprites.combined);
 		    batch.begin();
-		    
-//		      s.draw(batch);
 		      
 		    for(BoxEntity boxEntity : boxEntities)
 		    {
@@ -216,8 +230,6 @@ public class Box2dMovement extends ApplicationAdapter {
 
 	  public Vector2 getPlayerPosition()
 	  {
-	    
-	    
 	    for(BoxEntity boxEntity : boxEntities)
 	    {
 	      if(boxEntity.getClass() == Player.class)
@@ -256,6 +268,7 @@ public class Box2dMovement extends ApplicationAdapter {
   public void loadAssets(){
     assetManager.load(TEXTURE_LIBGDX, Texture.class);
     assetManager.load(TEXTURE_ENTITIES, Texture.class);
+    assetManager.load(TEXTURE_MECHA, Texture.class);
     assetManager.finishLoading();
   }
   
@@ -266,4 +279,16 @@ public class Box2dMovement extends ApplicationAdapter {
   public World getWorld() {
 		return world;
   }
+
+
+
+public Animation<TextureRegion> getAnimation() {
+	return animation;
+}
+
+
+
+public TextureRegion getEntityPlayerRegion() {
+	return entityPlayerRegion;
+}
 }

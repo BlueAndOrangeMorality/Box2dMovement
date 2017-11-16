@@ -4,6 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public interface BoxEntity {
 
-	public void move(Box2dMovement box2dMovement);
+	public void move();
 	public void render(SpriteBatch batch);
 }

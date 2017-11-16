@@ -7,8 +7,6 @@ import static de.ranagazoo.box.Config.MASK_MSENSOR;
 import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,17 +28,19 @@ public class Enemy implements BoxEntity
   public static final int STATUS_ATTACK = 2;
   public static final int STATUS_NEW_TARGET = 3;
     
+  private Box2dMovement box2dMovement;
   private Body enemyBody;
   private int currentTargetIndex;
   private int currentStatus;
   
-  private Texture mechaTexture;
   private Animation<TextureRegion> animation;
   private float stateTime;
   
   public Enemy(Box2dMovement box2dMovement, int posX, int posY)
   {
-    currentStatus = STATUS_IDLE;
+	  this.box2dMovement = box2dMovement;
+	  
+	  currentStatus = STATUS_IDLE;
     stateTime = 0f;
     
     Shape tempShape;
@@ -85,18 +85,7 @@ public class Enemy implements BoxEntity
     
     tempShape.dispose();
     
-    
-    
-    mechaTexture = new Texture(Gdx.files.internal("data/mecha32.png"));
-    mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-      
-    TextureRegion[] animationFrames = new TextureRegion[5];
-    animationFrames[0] = new TextureRegion(mechaTexture, 0, 384, 64, 64);
-    animationFrames[1] = new TextureRegion(mechaTexture, 64, 384, 64, 64);
-    animationFrames[2] = new TextureRegion(mechaTexture, 128, 384, 64, 64);
-    animationFrames[3] = new TextureRegion(mechaTexture, 192, 384, 64, 64);
-    animationFrames[4] = new TextureRegion(mechaTexture, 256, 384, 64, 64);
-    animation = new Animation<TextureRegion>(0.1f, animationFrames);
+    animation = box2dMovement.getAnimation();
   }
   
   
@@ -106,7 +95,7 @@ public class Enemy implements BoxEntity
    * - NEW_TARGET: Neuen Waypoint aussuchen und auf IDLE wechseln
    * - IDLE:       Auf aktuellen Waypoint zulaufen
    */
-  public void move(Box2dMovement box2dMovement)
+  public void move()
   {
     if(currentStatus == STATUS_ATTACK)
     {
