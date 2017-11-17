@@ -16,60 +16,54 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
-
 public class Player implements BoxEntity
 {
   private Body playerBody;
   private Sprite playerSprite;
-  
+
   public Player(Box2dMovement box2dMovement, float posX, float posY)
   {
-	PolygonShape tempShape;
-    FixtureDef tempFixtureDef = null;
-    
     BodyDef bodyDef = new BodyDef();
     bodyDef.angularDamping = 5;
     bodyDef.fixedRotation = false;
     bodyDef.linearDamping = 5;
     bodyDef.position.set(posX, posY);
     bodyDef.type = BodyType.DynamicBody;
-    
+
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.density = 0.5f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    fixtureDef.filter.categoryBits = CATEGORY_PLAYER;
+    fixtureDef.filter.maskBits = MASK_PLAYER;
+
+    PolygonShape shape = new PolygonShape();
+    shape.set(new float[]{-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
+    fixtureDef.shape = shape;
+
     playerBody = box2dMovement.getWorld().createBody(bodyDef);
+    playerBody.createFixture(fixtureDef);
     playerBody.setUserData("userData");
 
-    tempShape= new PolygonShape();
-    tempShape.set(new float[]{-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
-    
-    tempFixtureDef = new FixtureDef();
-    tempFixtureDef.density = 0.5f;
-    tempFixtureDef.friction = 0.4f;
-    tempFixtureDef.restitution = 0.1f;
-    tempFixtureDef.shape = tempShape;
-    tempFixtureDef.filter.categoryBits = CATEGORY_PLAYER;
-    tempFixtureDef.filter.maskBits = MASK_PLAYER;
-    
-    playerBody.createFixture(tempFixtureDef);
-    
-    tempShape.dispose();
-    
+    shape.dispose();
+
     playerSprite = new Sprite(box2dMovement.getEntityPlayerRegion());
     playerSprite.setSize(TS, TS);
-    playerSprite.setOrigin(TS/2, TS/2);
+    playerSprite.setOrigin(TS / 2, TS / 2);
   }
-  
-  
+
   public void move()
   {
-    if(Gdx.input.isKeyPressed(Keys.A))
+    if (Gdx.input.isKeyPressed(Keys.A))
       playerBody.applyLinearImpulse(new Vector2(-1.2f, 0), playerBody.getPosition(), true);
-    if(Gdx.input.isKeyPressed(Keys.D))
+    if (Gdx.input.isKeyPressed(Keys.D))
       playerBody.applyLinearImpulse(new Vector2(1.2f, 0), playerBody.getPosition(), true);
-    if(Gdx.input.isKeyPressed(Keys.W))
+    if (Gdx.input.isKeyPressed(Keys.W))
       playerBody.applyLinearImpulse(new Vector2(0, 1.2f), playerBody.getPosition(), true);
-    if(Gdx.input.isKeyPressed(Keys.S))
+    if (Gdx.input.isKeyPressed(Keys.S))
       playerBody.applyLinearImpulse(new Vector2(0, -1.2f), playerBody.getPosition(), true);
   }
-  
+
   public void render(SpriteBatch batch)
   {
     playerSprite.setPosition((playerBody.getPosition().x - 0.5f) * TS, (playerBody.getPosition().y - 0.5f) * TS);
