@@ -10,14 +10,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
 
 
 public class Waypoint
 {
   private Body waypointBody;
   
-  public Waypoint(World world, float posX, float posY, int myIndexInTheArray)
+  public Waypoint(Box2dMovement box2dMovement, float posX, float posY)
   {
 	CircleShape tempShape;
     FixtureDef tempFixtureDef = null;
@@ -28,8 +27,8 @@ public class Waypoint
     bodyDef.linearDamping = 2f;
     bodyDef.position.set(posX, posY);
     
-    waypointBody = world.createBody(bodyDef);
-    waypointBody.setUserData(myIndexInTheArray);
+    waypointBody = box2dMovement.getWorld().createBody(bodyDef);
+    waypointBody.setUserData(box2dMovement.getWaypoints().size());
     
     tempShape = new CircleShape();
     tempShape.setRadius(0.5f);
