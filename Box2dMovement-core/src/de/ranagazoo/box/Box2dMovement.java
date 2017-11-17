@@ -53,6 +53,8 @@ public class Box2dMovement extends ApplicationAdapter
   private World world;
   private Box2DDebugRenderer debugRenderer;
 
+  private BoxEntityFactory boxEntityFactory;
+  
   // My Objects
   private ArrayList<BoxEntity> boxEntities;
   private ArrayList<Waypoint> waypoints;
@@ -70,6 +72,8 @@ public class Box2dMovement extends ApplicationAdapter
     world = new World(new Vector2(0, 0), true);
     world.setContactListener(new Box2dContactListener());
 
+    boxEntityFactory = new BoxEntityFactory();
+    
     // Renderer / Cameras
     debugRenderer = new Box2DDebugRenderer();
 
@@ -292,5 +296,10 @@ public class Box2dMovement extends ApplicationAdapter
   public ArrayList<Waypoint> getWaypoints()
   {
     return waypoints;
+  }
+
+  public BoxEntityFactory getBoxEntityFactory()
+  {
+    return boxEntityFactory;
   }
 }

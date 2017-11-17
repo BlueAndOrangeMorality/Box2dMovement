@@ -22,9 +22,9 @@ public class Obstacle implements BoxEntity
     FixtureDef fixtureDef;
     
     BodyDef bodyDef = new BodyDef();
-    bodyDef.angularDamping = 2;
+    bodyDef.angularDamping = 2f;
     bodyDef.fixedRotation = false;
-    bodyDef.linearDamping = 2;
+    bodyDef.linearDamping = 2f;
     bodyDef.position.set(posX, posY);
     
     groundBody = box2dMovement.getWorld().createBody(bodyDef);

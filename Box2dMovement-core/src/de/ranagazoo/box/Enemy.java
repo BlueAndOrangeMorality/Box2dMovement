@@ -40,12 +40,12 @@ public class Enemy implements BoxEntity
     currentStatus = STATUS_IDLE;
     stateTime = 0f;
 
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.angularDamping = 2;
-    bodyDef.fixedRotation = false;
-    bodyDef.linearDamping = 2;
-    bodyDef.position.set(posX, posY);
-    bodyDef.type = BodyType.DynamicBody;
+//    BodyDef bodyDef = new BodyDef();
+//    bodyDef.angularDamping = 2;
+//    bodyDef.fixedRotation = false;
+//    bodyDef.linearDamping = 2;
+//    bodyDef.position.set(posX, posY);
+//    bodyDef.type = BodyType.DynamicBody;
 
     // Wedge Shape for the enemy's body
     FixtureDef fixtureDef = new FixtureDef();
@@ -72,7 +72,9 @@ public class Enemy implements BoxEntity
     shapeSensor.setRadius(3);
     fixtureDefSensor.shape = shapeSensor;
 
-    enemyBody = box2dMovement.getWorld().createBody(bodyDef);
+    box2dMovement.getBoxEntityFactory().defineBodyDef(BoxEntityFactory.BOXTYPE_ENEMY, posX, posY);
+    enemyBody = box2dMovement.getWorld().createBody(box2dMovement.getBoxEntityFactory().getBodyDef());
+    //enemyBody = box2dMovement.getWorld().createBody(bodyDef);
     enemyBody.createFixture(fixtureDef);
     enemyBody.createFixture(fixtureDefSensor);
     enemyBody.setUserData(this);
