@@ -1,7 +1,5 @@
 package de.ranagazoo.box;
 
-import static de.ranagazoo.box.Config.CATEGORY_PLAYER;
-import static de.ranagazoo.box.Config.MASK_PLAYER;
 import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.Gdx;
@@ -11,10 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class Player implements BoxEntity
 {
@@ -23,29 +17,32 @@ public class Player implements BoxEntity
 
   public Player(Box2dMovement box2dMovement, float posX, float posY)
   {
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.angularDamping = 5;
-    bodyDef.fixedRotation = false;
-    bodyDef.linearDamping = 5;
-    bodyDef.position.set(posX, posY);
-    bodyDef.type = BodyType.DynamicBody;
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.density = 0.5f;
-    fixtureDef.friction = 0.4f;
-    fixtureDef.restitution = 0.1f;
-    fixtureDef.filter.categoryBits = CATEGORY_PLAYER;
-    fixtureDef.filter.maskBits = MASK_PLAYER;
-
-    PolygonShape shape = new PolygonShape();
-    shape.set(new float[]{-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
-    fixtureDef.shape = shape;
-
-    playerBody = box2dMovement.getWorld().createBody(bodyDef);
-    playerBody.createFixture(fixtureDef);
+//    BodyDef bodyDef = new BodyDef();
+//    bodyDef.angularDamping = 5;
+//    bodyDef.fixedRotation = false;
+//    bodyDef.linearDamping = 5;
+//    bodyDef.position.set(posX, posY);
+//    bodyDef.type = BodyType.DynamicBody;
+//
+//    FixtureDef fixtureDef = new FixtureDef();
+//    fixtureDef.density = 0.5f;
+//    fixtureDef.friction = 0.4f;
+//    fixtureDef.restitution = 0.1f;
+//    fixtureDef.filter.categoryBits = CATEGORY_PLAYER;
+//    fixtureDef.filter.maskBits = MASK_PLAYER;
+//
+//    PolygonShape shape = new PolygonShape();
+//    shape.set(new float[]{-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
+//    fixtureDef.shape = shape;
+//
+    //playerBody = box2dMovement.getWorld().createBody(bodyDef);
+    //playerBody.createFixture(fixtureDef);
+    //shape.dispose();
+    
+    playerBody = box2dMovement.getWorld().createBody(box2dMovement.getBoxEntityFactory().getBodyDef(posX, posY));
+    playerBody.createFixture(box2dMovement.getBoxEntityFactory().getFixtureDef());
     playerBody.setUserData("userData");
 
-    shape.dispose();
 
     playerSprite = new Sprite(box2dMovement.getEntityPlayerRegion());
     playerSprite.setSize(TS, TS);

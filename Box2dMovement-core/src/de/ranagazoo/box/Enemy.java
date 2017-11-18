@@ -1,9 +1,5 @@
 package de.ranagazoo.box;
 
-import static de.ranagazoo.box.Config.CATEGORY_MONSTER;
-import static de.ranagazoo.box.Config.CATEGORY_MSENSOR;
-import static de.ranagazoo.box.Config.MASK_MONSTER;
-import static de.ranagazoo.box.Config.MASK_MSENSOR;
 import static de.ranagazoo.box.Config.TS;
 
 import com.badlogic.gdx.Gdx;
@@ -14,11 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class Enemy implements BoxEntity
 {
@@ -46,41 +37,43 @@ public class Enemy implements BoxEntity
 //    bodyDef.linearDamping = 2;
 //    bodyDef.position.set(posX, posY);
 //    bodyDef.type = BodyType.DynamicBody;
-
-    // Wedge Shape for the enemy's body
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.density = 0.2f;
-    fixtureDef.friction = 0.4f;
-    fixtureDef.restitution = 0.1f;
-    fixtureDef.filter.categoryBits = CATEGORY_MONSTER;
-    fixtureDef.filter.maskBits = MASK_MONSTER;
-
-    PolygonShape shape = new PolygonShape();
-    shape.set(new float[]{-0.25f, -0.25f, 0, -1, 0.25f, -0.25f, 0.25f, 0.25f, -0.25f, 0.25f});
-    fixtureDef.shape = shape;
-
-    // Circle Shape for the enemy's sensor
-    FixtureDef fixtureDefSensor = new FixtureDef();
-    fixtureDefSensor.density = 0f;
-    fixtureDefSensor.friction = 0.4f;
-    fixtureDefSensor.restitution = 0.1f;
-    fixtureDefSensor.filter.categoryBits = CATEGORY_MSENSOR;
-    fixtureDefSensor.filter.maskBits = MASK_MSENSOR;
-    fixtureDefSensor.isSensor = true;
-
-    CircleShape shapeSensor = new CircleShape();
-    shapeSensor.setRadius(3);
-    fixtureDefSensor.shape = shapeSensor;
-
-    box2dMovement.getBoxEntityFactory().defineBodyDef(BoxEntityFactory.BOXTYPE_ENEMY, posX, posY);
-    enemyBody = box2dMovement.getWorld().createBody(box2dMovement.getBoxEntityFactory().getBodyDef());
-    //enemyBody = box2dMovement.getWorld().createBody(bodyDef);
-    enemyBody.createFixture(fixtureDef);
-    enemyBody.createFixture(fixtureDefSensor);
+//
+//    // Wedge Shape for the enemy's body
+//    FixtureDef fixtureDef = new FixtureDef();
+//    fixtureDef.density = 0.2f;
+//    fixtureDef.friction = 0.4f;
+//    fixtureDef.restitution = 0.1f;
+//    fixtureDef.filter.categoryBits = CATEGORY_MONSTER;
+//    fixtureDef.filter.maskBits = MASK_MONSTER;
+//
+//    PolygonShape shape = new PolygonShape();
+//    shape.set(new float[]{-0.25f, -0.25f, 0, -1, 0.25f, -0.25f, 0.25f, 0.25f, -0.25f, 0.25f});
+//    fixtureDef.shape = shape;
+//
+//    // Circle Shape for the enemy's sensor
+//    FixtureDef fixtureDefSensor = new FixtureDef();
+//    fixtureDefSensor.density = 0f;
+//    fixtureDefSensor.friction = 0.4f;
+//    fixtureDefSensor.restitution = 0.1f;
+//    fixtureDefSensor.filter.categoryBits = CATEGORY_MSENSOR;
+//    fixtureDefSensor.filter.maskBits = MASK_MSENSOR;
+//    fixtureDefSensor.isSensor = true;
+//
+//    CircleShape shapeSensor = new CircleShape();
+//    shapeSensor.setRadius(3);
+//    fixtureDefSensor.shape = shapeSensor;
+//
+//    enemyBody = box2dMovement.getWorld().createBody(bodyDef);
+//    enemyBody.createFixture(fixtureDef);
+//    enemyBody.createFixture(fixtureDefSensor);
+//    shape.dispose();
+//    shapeSensor.dispose();
+    
+    
+    enemyBody = box2dMovement.getWorld().createBody(box2dMovement.getBoxEntityFactory().getBodyDef(posX, posY));
+    enemyBody.createFixture(box2dMovement.getBoxEntityFactory().getFixtureDef());
+    enemyBody.createFixture(box2dMovement.getBoxEntityFactory().getFixtureDefSensor());
     enemyBody.setUserData(this);
-
-    shape.dispose();
-    shapeSensor.dispose();
 
     animation = box2dMovement.getAnimation();
   }

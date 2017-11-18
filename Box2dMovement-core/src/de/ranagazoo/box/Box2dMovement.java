@@ -119,9 +119,12 @@ public class Box2dMovement extends ApplicationAdapter
     boxEntities = new ArrayList<BoxEntity>();
 
     // Ein Spieler
+    boxEntityFactory.defineBodyDef(BoxEntityFactory.BOXTYPE_PLAYER);
     boxEntities.add(new Player(this, 16, 10));
-
+    
+    
     // Beliebig viele entities
+    boxEntityFactory.defineBodyDef(BoxEntityFactory.BOXTYPE_ENEMY);
     boxEntities.add(new Enemy(this, 16, 22));
     boxEntities.add(new Enemy(this, 20, 2));
     boxEntities.add(new Enemy(this, 23, 2));
@@ -130,6 +133,7 @@ public class Box2dMovement extends ApplicationAdapter
     boxEntities.add(new Enemy(this, 23, 22));
     boxEntities.add(new Enemy(this, 10, 22));
 
+    boxEntityFactory.defineBodyDef(BoxEntityFactory.BOXTYPE_WAYPOINT);
     // Beliebig viele Waypoints, zwischen denen die Entities hin- und hertuckern
     waypoints = new ArrayList<Waypoint>();
     waypoints.add(new Waypoint(this, 3, 3));
@@ -144,6 +148,7 @@ public class Box2dMovement extends ApplicationAdapter
     waypoints.add(new Waypoint(this, 24, 3));
     waypoints.add(new Waypoint(this, 25, 20));
 
+    boxEntityFactory.defineBodyDef(BoxEntityFactory.BOXTYPE_OBSTACLE);
     // Hindernisse (statisch)
     boxEntities.add(new Obstacle(this, 16, 4, region));
     boxEntities.add(new Obstacle(this, 18, 8, region));
